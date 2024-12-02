@@ -2,6 +2,7 @@ const express = require ("express");
 const app = express();
 const path = require("path");
 const port = 3000
+const data = require('./data');
 
 //app.set("view engine", "hbs");
 app.use(express.static(path.join(__dirname, "public")))
@@ -9,7 +10,7 @@ app.use(express.static(path.join(__dirname, "public")))
 app.set('view engine', 'ejs')
 
 app.get('/', (req, res) => {
-    res.render('index', { title: 'Meu app', message: 'Olá'})
+    res.render('index', data)
 })
 
 app.listen(port, () => {
