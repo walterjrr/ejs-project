@@ -8,13 +8,15 @@
 
 <body>
    <h1><%= message %></h1>
-   <label><%= name %></label>
-   <input>
+   <label for="name"><%= name %></label>
+   <input type="text" id="name" name="name">
    <br>
-   <label><%= login %></label>
-   <input>
+   <label for="login"><%= login %></label>
+   <input type="text" id="login" name="login">
    <br>
-   <label><%= password %></label>
-   <input>
+   <label for="password"><%= password %></label>
+   <input type="password" id="password" name="password">
+   <br>
+   <button type="submit" onclick="window.location.href='/submited';">Salvar informações</button>
 </body>
 </html>

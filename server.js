@@ -13,6 +13,10 @@ app.get('/', (req, res) => {
     res.render('index', data)
 })
 
+app.get('/submited', (req, res) => {
+    res.render('submited', )
+})
+
 app.listen(port, () => {
     console.log(`server runing in localhost , ${port}`)
 })
