@@ -35,6 +35,17 @@ app.post('/submited', (req, res) => {
 
 })
 
+app.post('/delete', (req, res) => {
+    const { login } = req.body;
+
+    if (!login) {
+        return res.status(400).send("login do Usuario é obrigatorio para deletar")
+    }
+
+    users = users.filter(user => user.login !== login);
+    res.redirect("/users");
+})
+
 app.get('/users', (req, res) => {
     res.render('users', {users})
 })

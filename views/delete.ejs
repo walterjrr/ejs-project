@@ -3,22 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Usuários</title>
+    <title>Delete</title>
 </head>
 <body>
-    <h1>Usuários Cadastrados</h1>
+    <h1>delete user</h1>
+    <button>yes</button>
     <ul>
         <% users.forEach(user => { %>
             <li>
                 Nome: <%= user.name %>, Login: <%= user.login %>
-                <form action="/delete" method="post" style="display: inline">
-                    <input type="hidden" name="login" value="<%= user.login %>">
-                    <button type="submit">Deletar</button>
-                </form>
                 <a href="/delete">$</a>
             </li>
         <% }); %>
     </ul>
-    <a href="/">Voltar ao formulário</a>
 </body>
 </html>
