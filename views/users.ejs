@@ -15,7 +15,7 @@
                     <input type="hidden" name="login" value="<%= user.login %>">
                     <button type="submit">Deletar</button>
                 </form>
-                <a href="/delete">$</a>
+                <a href="/edit/<%= user.login %>">Editar</a>
             </li>
         <% }); %>
     </ul>

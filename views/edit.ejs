@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <%= title %>
+    </title>
+</head>
+
+<body>
+    <form action="/edit/<%= user.login %>" method="post">
+        <h1><%= message %></h1>
+        <label for="name">Nome</label>
+        <input type="text" id="name" name="name" value="<%= user.name %>">
+        <br>
+        <label for="login">Usuário</label>
+        <input type="text" id="login" name="newLogin" value="<%= user.login %>">
+        <br>
+        <label for="password">Senha</label>
+        <input type="password" id="password" name="password" value="<%= user.password %>">
+        <br>
+        <button type="submit">Salvar informações</button>
+    </form>
+    
+\
+</body>
+
+</html>
