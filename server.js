@@ -7,6 +7,7 @@ const bcrypt = require("bcrypt")
 
 app.use(express.static('public'));
 
+app.use('/bootstrap', express.static(path.join(__dirname, 'node_modules/bootstrap/dist')));
 
 const User = require("./models/user");
 
