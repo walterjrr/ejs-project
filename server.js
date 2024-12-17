@@ -3,8 +3,11 @@ const app = express();
 const path = require("path");
 const port = 3000
 const data = require('./data');
+const bcrypt = require("bcrypt")
 
-const user = require('./models/user');
+app.use(express.static('public'));
+
+
 const User = require("./models/user");
 
 app.use(express.urlencoded({ extended: true }));
@@ -25,11 +28,14 @@ app.post('/submited', async (req, res) => {
     const { name, login, password } = req.body;
     console.log('chegou ate aqui', req.body)
 
+    
     try {
-        const newUser = new User({ name, login, password });
+        const passwordHash = await bcrypt.hash(password, 10)
+        const newUser = new User({ name, login, password: passwordHash });
         await newUser.save();
     } catch (err) {
         console.error('erro ao salvar o usuario:', err);
+        
         res.status(500).send('erro ao salvar o usuario');
     }
     res.redirect('/users');
@@ -80,7 +86,6 @@ app.get('/edit/:login', async (req, res) => {
         title: "Editar Usuário",
         message: "Atualize as informações do usuário",
         name: "Nome",
-        password: "Senha",
         user
     });
     } catch (err) {
