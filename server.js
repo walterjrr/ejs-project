@@ -10,6 +10,7 @@ app.use(express.static('public'));
 app.use('/bootstrap', express.static(path.join(__dirname, 'node_modules/bootstrap/dist')));
 
 const User = require("./models/user");
+const { default: mongoose } = require("mongoose");
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -28,18 +29,25 @@ app.get('/submited', (req, res) => {
 app.post('/submited', async (req, res) => {
     const { name, login, password } = req.body;
     console.log('chegou ate aqui', req.body)
+    //const loginInput = document.getElementById('login');
+
 
     
     try {
         const passwordHash = await bcrypt.hash(password, 10)
+        const alreadyEmail = await User.findOne({ login })
+        //if(alreadyEmail) {
+        //    loginInput.classList.add('invalid-feedback')
+        //}
         const newUser = new User({ name, login, password: passwordHash });
+
         await newUser.save();
+        res.redirect('/users');
     } catch (err) {
         console.error('erro ao salvar o usuario:', err);
         
         res.status(500).send('erro ao salvar o usuario');
     }
-    res.redirect('/users');
 
 })
 

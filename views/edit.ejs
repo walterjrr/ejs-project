@@ -7,27 +7,28 @@
     <title>
         <%= title %>
     </title>
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+
 </head>
 
 <body>
-    <form action="/edit/<%= user.login %>" method="post">
+    <form action="/edit/<%= user.login %>" class="col-6 mx-auto" method="post">
         <h1><%= message %></h1>
-        <label for="name">Nome</label>
-        <input type="text" id="name" name="name" value="<%= user.name %>">
+        <label class="form-label" for="name">Nome</label>
+        <input required class="form-control" type="text" id="name" name="name" value="<%= user.name %>">
         <br>
-        <label for="login">Usuário</label>
-        <input type="text" id="login" name="newLogin" value="<%= user.login %>">
+        <label class="form-label" for="login">Usuário</label>
+        <input required class="form-control" type="text" id="login" name="newLogin" value="<%= user.login %>">
         <br>
+        <button class="btn btn-primary" type="submit">Salvar informações</button>
         <br>
-        <button type="submit">Salvar informações</button>
+        <a class="btn btn-primary" href="/">Cadastrar Usuarios</a>
         <br>
-        <a href="/">Cadastrar Usuarios</a>
-        <br>
-        <a href="http://localhost:3000/users">usuarios</a>
+        <a class="btn btn-primary" href="http://localhost:3000/users">usuarios</a>
 
     </form>
-    
-\
+    <script src="/bootstrap/js/bootstrap.bundle.min.js"></script>
+
 </body>
 
 </html>

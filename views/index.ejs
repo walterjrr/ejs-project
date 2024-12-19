@@ -12,24 +12,24 @@
 </head>
 
 <body>
-    <form action="/submited" method="post" >
+    <form action="/submited" class="col-6 mx-auto" method="post" >
         <h1>
             <%= message %>
         </h1>
         <label class="form-label" for="name">
             <%= name %>
         </label>
-        <input class="form-control" type="text" id="name" name="name">
+        <input required class="form-control" type="text" id="name" name="name">
         <br>
         <label class="form-label" for="login">
             <%= login %>
         </label>
-        <input class="form-control" type="text" id="login" name="login">
+        <input required class="form-control" type="text" id="login" name="login">
         <br>
         <label class="form-label" for="password">
             <%= password %>
         </label>
-        <input class="form-control" type="password" id="password" name="password">
+        <input required class="form-control" type="password" id="password" name="password">
         <br>
         <button class="btn btn-primary" type="submit">Salvar informações</button>
         <br>
