@@ -12,31 +12,30 @@
 </head>
 
 <body>
-    <form action="/submited" class="col-6 mx-auto" method="post" >
-        <h1>
-            <%= message %>
-        </h1>
-        <label class="form-label" for="name">
-            <%= name %>
-        </label>
+    <form id="registrationForm" action="/submited" class="col-6 mx-auto" method="post">
+        <h1>Cadastrar usuário</h1>
+    
+        <label class="form-label" for="name">Nome</label>
         <input required class="form-control" type="text" id="name" name="name">
         <br>
-        <label class="form-label" for="login">
-            <%= login %>
-        </label>
+    
+        <label class="form-label" for="login">Login</label>
         <input required class="form-control" type="text" id="login" name="login">
+        <div class="invalid-feedback">Login já existe</div> <!-- Feedback sempre presente no DOM -->
         <br>
-        <label class="form-label" for="password">
-            <%= password %>
-        </label>
+    
+        <label class="form-label" for="password">Senha</label>
         <input required class="form-control" type="password" id="password" name="password">
         <br>
+    
         <button class="btn btn-primary" type="submit">Salvar informações</button>
         <br>
-        <a class="btn btn-light" href="/users">usuarios</a>
+        <a class="btn btn-light" href="/users">Usuários</a>
     </form>
+    
+    
+    <script src="/js/index.js"></script>
     <script src="/bootstrap/js/bootstrap.bundle.min.js"></script>
-
 
 </body>
 

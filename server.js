@@ -28,28 +28,28 @@ app.get('/submited', (req, res) => {
 
 app.post('/submited', async (req, res) => {
     const { name, login, password } = req.body;
-    console.log('chegou ate aqui', req.body)
-    //const loginInput = document.getElementById('login');
 
-
-    
     try {
-        const passwordHash = await bcrypt.hash(password, 10)
-        const alreadyEmail = await User.findOne({ login })
-        //if(alreadyEmail) {
-        //    loginInput.classList.add('invalid-feedback')
-        //}
+        const alreadyEmail = await User.findOne({ login });
+        if (alreadyEmail) {
+            return res.status(400).json({
+                field: 'login',
+                message: 'Login já existe',
+            });
+        }
+
+        const passwordHash = await bcrypt.hash(password, 10);
         const newUser = new User({ name, login, password: passwordHash });
 
         await newUser.save();
         res.redirect('/users');
     } catch (err) {
-        console.error('erro ao salvar o usuario:', err);
-        
-        res.status(500).send('erro ao salvar o usuario');
+        console.error('Erro ao salvar o usuário:', err);
+        res.status(500).send('Erro ao salvar o usuário');
     }
+});
 
-})
+
 
 app.get('/users', async (req, res) => {
 

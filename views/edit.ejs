@@ -12,7 +12,7 @@
 </head>
 
 <body>
-    <form action="/edit/<%= user.login %>" class="col-6 mx-auto" method="post">
+    <form action="/edit/<%= user.login %>"  method="post">
         <h1><%= message %></h1>
         <label class="form-label" for="name">Nome</label>
         <input required class="form-control" type="text" id="name" name="name" value="<%= user.name %>">
