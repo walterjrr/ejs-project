@@ -5,7 +5,7 @@ const port = 3000
 const data = require('./data');
 const bcrypt = require("bcrypt");
 const multer = require("multer");
-const upload = multer({dest: "users/"})
+
 
 
 app.use(express.static('public'));
@@ -22,6 +22,16 @@ app.use(express.json());
 
 app.set('view engine', 'ejs');
 app.set('views', './views');
+
+const storage = multer.diskStorage({
+    destination: "users/", // Define a pasta onde os arquivos serão salvos
+    filename: (req, file, cb) => {
+        const uniqueName = `${Date.now()}.jpg`; // Nome único com extensão .jpg
+        cb(null, uniqueName);
+    },
+});
+
+const upload = multer({ storage });
 
 app.get('/', (req, res) => {
     res.render('index', data)
