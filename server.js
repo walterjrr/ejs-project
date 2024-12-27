@@ -3,9 +3,14 @@ const app = express();
 const path = require("path");
 const port = 3000
 const data = require('./data');
-const bcrypt = require("bcrypt")
+const bcrypt = require("bcrypt");
+const multer = require("multer");
+const upload = multer({dest: "users/"})
+
 
 app.use(express.static('public'));
+app.use("/users", express.static(path.join(__dirname, "users")));
+
 
 app.use('/bootstrap', express.static(path.join(__dirname, 'node_modules/bootstrap/dist')));
 
@@ -26,8 +31,12 @@ app.get('/submited', (req, res) => {
     res.render('submited', { users })
 })
 
-app.post('/submited', async (req, res) => {
+app.post('/submited', upload.single('image'), async (req, res) => {
     const { name, login, password } = req.body;
+
+    /*if(!req.body.image) {
+        return res.status(400).send("nao ha imagem selecionada")
+    }*/
 
     try {
         const alreadyEmail = await User.findOne({ login });
@@ -38,8 +47,9 @@ app.post('/submited', async (req, res) => {
             });
         }
 
+        console.log(req.file)
         const passwordHash = await bcrypt.hash(password, 10);
-        const newUser = new User({ name, login, password: passwordHash });
+        const newUser = new User({ name, login, password: passwordHash, image: req.file.path });
 
         await newUser.save();
         res.redirect('/users');
@@ -118,10 +128,10 @@ app.post("/edit/:login", async (req, res) => {
         )
 
         if (!updateLogin) {
-            return res.status(404).send("Usuário não encontrado");
+            return res.status(404).send("UsuArio nAo encontrado");
         }
     } catch (err) {
-        res.status(500).send("Erro ao atualizar o usuário: " + err.message);
+        res.status(500).send("Erro ao atualizar o usuArio: " + err.message);
     }
     res.redirect("/users")
 })

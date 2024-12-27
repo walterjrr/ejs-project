@@ -12,7 +12,7 @@
 </head>
 
 <body>
-    <form id="registrationForm" action="/submited" class="col-6 mx-auto" method="post">
+    <form id="registrationForm" action="/submited" class="col-6 mx-auto" method="post" enctype="multipart/form-data">
         <h1>Cadastrar usuário</h1>
     
         <label class="form-label" for="name">Nome</label>
@@ -26,9 +26,10 @@
     
         <label class="form-label" for="password">Senha</label>
         <input  required class="form-control" type="password" id="password" name="password">
-        <div id="showpassword">Senha Invalida</div>
+        <div style="color: red;" id="showpassword">Senha Invalida</div>
         <br>
-    
+        <input type="file" id="image" name="image"/>
+        <br>
         <button class="btn btn-primary" type="submit">Salvar informações</button>
         <br>
         <a class="btn btn-light" href="/users">Usuários</a>

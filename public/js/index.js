@@ -42,8 +42,7 @@ form.addEventListener('submit', async (e) => {
     try {
         const response = await fetch('/submited', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data),
+            body: formData,
         });
 
         if (!response.ok) {
@@ -57,6 +56,6 @@ form.addEventListener('submit', async (e) => {
         }
         window.location.href = '/users';
     } catch (err) {
-        console.error('Erro na requisição:', err);
+        console.error({error: 'erro na requisição:', message: err});
     }
 });
