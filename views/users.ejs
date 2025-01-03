@@ -5,26 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Usuários</title>
     <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
-
+    <link rel="stylesheet" href="/public/css/users.css">
 </head>
-<body class="col-6 mx-auto">
-    <h1>Usuários Cadastrados</h1>
-    <ul >
+<body class="container my-5">
+    <h1 class="text-center mb-4">Usuários Cadastrados</h1>
+    <ul class="list-group">
         <% users.forEach(user => { %>
-            <li>
-                <img class="img-thumbnail" src= <%=user.image %> >
-                Nome: <%= user.name %>,
-                Login: <%= user.login %>
-                <form action="/delete" method="post" style="display: inline">
-                    <input class="form-control" type="hidden" name="login" value="<%= user.login %>">
-                    <button class="btn btn-primary" type="submit">Deletar</button>
-                </form>
-                <a class="btn btn-secondary" href="/edit/<%= user.login %>">Editar</a>
+            <li class="list-group-item d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center">
+                    <img src="<%= user.image %>" alt="Imagem de <%= user.name %>" class="rounded-circle me-3" style="width: 50px; height: 50px; object-fit: cover;">
+                    <div>
+                        <p class="mb-1"><strong>Nome:</strong> <%= user.name %></p>
+                        <p class="mb-1"><strong>Login:</strong> <%= user.login %></p>
+                    </div>
+                </div>
+                <div>
+                    <form action="/delete" method="post" class="d-inline">
+                        <input type="hidden" name="login" value="<%= user.login %>">
+                        <button class="btn btn-danger btn-sm" type="submit">Deletar</button>
+                    </form>
+                    <a class="btn btn-secondary btn-sm ms-2" href="/edit/<%= user.login %>">Editar</a>
+                </div>
             </li>
-            <% }); %>
-        </ul>
-        <a class="btn btn-primary" href="/">Cadastrar Usuarios</a>
+        <% }); %>
+    </ul>
+    <div class="text-center mt-4">
+        <a class="btn btn-primary" href="/">Cadastrar Usuários</a>
+    </div>
     <script src="/bootstrap/js/bootstrap.bundle.min.js"></script>
-
 </body>
 </html>
