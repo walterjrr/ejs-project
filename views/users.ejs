@@ -12,6 +12,7 @@
     <ul >
         <% users.forEach(user => { %>
             <li>
+                <img class="img-thumbnail" src= <%=user.image %> >
                 Nome: <%= user.name %>,
                 Login: <%= user.login %>
                 <form action="/delete" method="post" style="display: inline">

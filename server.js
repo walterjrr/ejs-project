@@ -26,7 +26,7 @@ app.set('views', './views');
 const storage = multer.diskStorage({
     destination: "users/", // Define a pasta onde os arquivos serão salvos
     filename: (req, file, cb) => {
-        const uniqueName = `${Date.now()}.jpg`; // Nome único com extensão .jpg
+        const uniqueName = `../users/${Date.now()}.jpg`; // Nome único com extensão .jpg
         cb(null, uniqueName);
     },
 });
@@ -59,7 +59,7 @@ app.post('/submited', upload.single('image'), async (req, res) => {
 
         console.log(req.file)
         const passwordHash = await bcrypt.hash(password, 10);
-        const newUser = new User({ name, login, password: passwordHash, image: req.file.path });
+        const newUser = new User({ name, login, password: passwordHash, image: req.file.filename });
 
         await newUser.save();
         res.redirect('/users');
