@@ -1,6 +1,9 @@
 const mongoose = require('mongoose');
+require('dotenv').config()
 
-const mongoURI = 'mongodb://localhost:27017/formejs';
+
+
+const mongoURI = process.env.MONGO_URL
 
 mongoose.connect(mongoURI).then(() => console.log('Conexão com o mongoDb estabelecida com sucesso!')).catch(err => console.log('Erro ao conectar ao mongoDb', err));
 
