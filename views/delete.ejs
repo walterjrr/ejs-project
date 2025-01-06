@@ -4,17 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Delete</title>
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
 </head>
-<body>
-    <h1>delete user</h1>
-    <button>yes</button>
-    <ul>
+<body class="container my-5">
+    <h1 class="text-center mb-4">Deletar Usuário</h1>
+
+    <div class="text-center mb-4">
+        <button class="btn btn-danger btn-lg">Sim</button>
+    </div>
+
+    <ul class="list-group">
         <% users.forEach(user => { %>
-            <li>
-                Nome: <%= user.name %>, Login: <%= user.login %>
-                <a href="/delete">$</a>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                    <strong>Nome:</strong> <%= user.name %>, <strong>Login:</strong> <%= user.login %>
+                </div>
+                <a href="/delete" class="btn btn-danger btn-sm">Deletar</a>
             </li>
         <% }); %>
     </ul>
+
+    <script src="/bootstrap/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

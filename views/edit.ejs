@@ -8,27 +8,30 @@
         <%= title %>
     </title>
     <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
-
 </head>
 
 <body>
-    <form action="/edit/<%= user.login %>"  method="post">
-        <h1><%= message %></h1>
-        <label class="form-label" for="name">Nome</label>
-        <input required class="form-control" type="text" id="name" name="name" value="<%= user.name %>">
-        <br>
-        <label class="form-label" for="login">Usuário</label>
-        <input required class="form-control" type="text" id="login" name="newLogin" value="<%= user.login %>">
-        <br>
-        <button class="btn btn-primary" type="submit">Salvar informações</button>
-        <br>
-        <a class="btn btn-primary" href="/">Cadastrar Usuarios</a>
-        <br>
-        <a class="btn btn-primary" href="http://localhost:3000/users">usuarios</a>
+    <form action="/edit/<%= user.login %>" class="col-6 mx-auto my-5 p-4 border rounded shadow" method="post">
+        <h1 class="text-center mb-4"><%= message %></h1>
 
+        <div class="mb-3">
+            <label class="form-label" for="name">Nome</label>
+            <input required class="form-control" type="text" id="name" name="name" value="<%= user.name %>" placeholder="Digite o nome">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label" for="login">Usuário</label>
+            <input required class="form-control" type="text" id="login" name="newLogin" value="<%= user.login %>" placeholder="Digite o login">
+        </div>
+
+        <div class="d-flex justify-content-between">
+            <button class="btn btn-primary" type="submit">Salvar Informações</button>
+            <a class="btn btn-secondary" href="/">Cadastrar Usuários</a>
+            <a class="btn btn-secondary" href="http://localhost:3000/users">Usuários</a>
+        </div>
     </form>
-    <script src="/bootstrap/js/bootstrap.bundle.min.js"></script>
 
+    <script src="/bootstrap/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
