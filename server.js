@@ -33,7 +33,33 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-app.get('/', (req, res) => {
+app.get('/login', async (req, res) => {
+    res.render('login', {msg: null})
+})
+
+app.post('/login', async (req, res) => {
+    const { login, password } = req.body;
+
+    try {
+        const user = await User.findOne({ login });
+        if (!user) {
+            return res.status(404).render('login', { msg: "Usuário não encontrado!" });
+        }
+
+        
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+        if (!isPasswordValid) {
+            return res.status(400).render('login', { msg: "Senha incorreta!" });
+        }
+
+        res.redirect(`/users`); 
+    } catch (err) {
+        console.error('Erro ao realizar login:', err.message);
+        res.status(500).render('index1', { msg: "Erro interno no servidor!" });
+    }
+});
+
+app.get('/cadastrar', (req, res) => {
     res.render('index', data)
 })
 
@@ -106,21 +132,21 @@ app.get('/edit/:login', async (req, res) => {
 
 
     try {
-        const user = await User.findOne({login})
+        const user = await User.findOne({ login })
         if (!user) {
-        return res.status(404).send("Usuario não encontrado")
-    }
-        
+            return res.status(404).send("Usuario não encontrado")
+        }
+
         res.render('edit', {
-        title: "Editar Usuário",
-        message: "Atualize as informações do usuário",
-        name: "Nome",
-        user
-    });
+            title: "Editar Usuário",
+            message: "Atualize as informações do usuário",
+            name: "Nome",
+            user
+        });
     } catch (err) {
         res.status(500).send("Erro ao buscar o usuário: " + err.message);
     }
-    
+
 })
 
 app.post("/edit/:login", async (req, res) => {
@@ -131,10 +157,12 @@ app.post("/edit/:login", async (req, res) => {
 
     try {
         const updateLogin = await User.findOneAndUpdate(
-            {login},
-            {name, password, 
-            login: newLogin || login},
-            {new: true}
+            { login },
+            {
+                name, password,
+                login: newLogin || login
+            },
+            { new: true }
         )
 
         if (!updateLogin) {
