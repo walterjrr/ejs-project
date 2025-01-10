@@ -37,27 +37,7 @@ app.get('/login', async (req, res) => {
     res.render('login', {msg: null})
 })
 
-app.post('/login', async (req, res) => {
-    const { login, password } = req.body;
 
-    try {
-        const user = await User.findOne({ login });
-        if (!user) {
-            return res.status(404).render('login', { msg: "Usuário não encontrado!" });
-        }
-
-        
-        const isPasswordValid = await bcrypt.compare(password, user.password);
-        if (!isPasswordValid) {
-            return res.status(400).render('login', { msg: "Senha incorreta!" });
-        }
-
-        res.redirect(`/users`); 
-    } catch (err) {
-        console.error('Erro ao realizar login:', err.message);
-        res.status(500).render('index1', { msg: "Erro interno no servidor!" });
-    }
-});
 
 app.get('/cadastrar', (req, res) => {
     res.render('index', data)
@@ -107,6 +87,31 @@ app.get('/users', async (req, res) => {
         res.status(500).send('erro ao buscar os usuarios');
     }
 })
+
+app.post('/login', async (req, res) => {
+    console.log("chegou aqui1", req.body)
+    const { login, password } = req.body;
+
+    try {
+        const user = await User.findOne({ login });
+        if (!user) {
+            return res.status(404).render('login', { msg: "Usuário não encontrado!" });
+        }
+
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+        console.log("chegou aqui", isPasswordValid)
+        if (!isPasswordValid) {
+            return res.status(400).render('login', { msg: "Senha incorreta!" });
+        }
+
+        // Redireciona para a rota '/users' após login bem-sucedido
+        res.redirect('/users');
+    } catch (err) {
+        console.error('Erro ao realizar login:', err.message);
+        res.status(500).render('login', { msg: "Erro interno no servidor!" });
+    }
+});
+
 
 app.post('/delete', async (req, res) => {
     const { login } = req.body;
