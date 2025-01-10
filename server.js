@@ -33,6 +33,10 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
+app.get('/', (req, res) => {
+    res.render('index')
+})
+
 app.get('/login', async (req, res) => {
     res.render('login', {msg: null})
 })
@@ -40,7 +44,7 @@ app.get('/login', async (req, res) => {
 
 
 app.get('/cadastrar', (req, res) => {
-    res.render('index', data)
+    res.render('register', data)
 })
 
 app.get('/submited', (req, res) => {
@@ -104,7 +108,7 @@ app.post('/login', async (req, res) => {
             return res.status(400).render('login', { msg: "Senha incorreta!" });
         }
 
-        res.redirect('/users');
+        res.redirect(`/edit/${login}`);
     } catch (err) {
         console.error('Erro ao realizar login:', err.message);
         res.status(500).render('login', { msg: "Erro interno no servidor!" });

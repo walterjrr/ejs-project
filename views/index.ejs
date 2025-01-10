@@ -4,45 +4,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>
-        <%= title %>
-    </title>
+    <title>Login</title>
     <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
 </head>
 
-<body>
-    <form id="registrationForm" action="/submited" class="col-6 mx-auto my-5 p-4 border rounded shadow" method="post" enctype="multipart/form-data">
-        <h1 class="text-center mb-4">Cadastrar Usuário</h1>
+<body class="bg-light">
+    <div class="container">
+            <h1 class="text-center mb-4">Entrar na conta</h1>
 
-        <div class="mb-3">
-            <label class="form-label" for="name">Nome</label>
-            <input required class="form-control" type="text" id="name" name="name" placeholder="Digite o nome">
-        </div>
+                <a class="btn btn-primary" href="login" >Fazer login</a>
+                <a class="btn btn-primary" href="/cadastrar" >Cadastrar</a>
+    </div>
 
-        <div class="mb-3">
-            <label class="form-label" for="login">Login</label>
-            <input required class="form-control" type="text" id="login" name="login" placeholder="Escolha um login">
-            <div class="invalid-feedback">Login já existe</div>
-        </div>
-
-        <div class="mb-3">
-            <label class="form-label" for="password">Senha</label>
-            <input required class="form-control" type="password" id="password" name="password" placeholder="Digite uma senha">
-            <div class="text-danger" id="showpassword">Senha inválida</div>
-        </div>
-
-        <div class="mb-3">
-            <label class="form-label" for="image">Imagem</label>
-            <input class="form-control" type="file" id="image" name="image">
-        </div>
-
-        <div class="d-flex justify-content-between">
-            <button class="btn btn-primary" type="submit">Salvar Informações</button>
-            <a class="btn btn-secondary" href="/users">Usuários</a>
-        </div>
-    </form>
-
-    <script src="/js/index.js"></script>
     <script src="/bootstrap/js/bootstrap.bundle.min.js"></script>
 </body>
 
