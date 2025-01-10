@@ -104,7 +104,6 @@ app.post('/login', async (req, res) => {
             return res.status(400).render('login', { msg: "Senha incorreta!" });
         }
 
-        // Redireciona para a rota '/users' após login bem-sucedido
         res.redirect('/users');
     } catch (err) {
         console.error('Erro ao realizar login:', err.message);
