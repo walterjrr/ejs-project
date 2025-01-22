@@ -5,9 +5,11 @@ const port = 3000
 const data = require('./data');
 const bcrypt = require("bcrypt");
 const multer = require("multer");
+const cors = require("cors");
 
 
 
+app.use(cors())
 app.use(express.static('public'));
 app.use("/users", express.static(path.join(__dirname, "users")));
 
@@ -22,6 +24,13 @@ app.use(express.json());
 
 app.set('view engine', 'ejs');
 app.set('views', './views');
+
+app.use(cors({
+    origin: "http://example.com", // Permitir apenas essa origem
+    methods: ["GET", "POST", "PUT", "DELETE"], // Permitir apenas esses métodos HTTP
+    allowedHeaders: ["Content-Type", "Authorization"], // Permitir apenas esses cabeçalhos
+    credentials: true, // Habilitar envio de cookies e credenciais
+}));
 
 const storage = multer.diskStorage({
     destination: "users/", // Define a pasta onde os arquivos serão salvos
