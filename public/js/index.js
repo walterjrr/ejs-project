@@ -20,42 +20,59 @@ const strength = (() => {
         document.getElementById('showpassword').innerHTML = strengthpassword[2],
         passwordok = true
     }
-
+    
 })
+
+const token = localStorage.getItem("token");
+
 
 document.getElementById('password').addEventListener('keydown', strength);
 
-
-form.addEventListener('submit', async (e) => {
-    if(!passwordok) {
-        e.preventDefault();
-        alert('A senha deve conter letra maiuscula e caracteres especiais')
-        return;
-    }
-
-
+document.getElementById("loginForm").addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const formData = new FormData(form);
+    const formData = new FormData(e.target);
     const data = Object.fromEntries(formData);
 
     try {
-        const response = await fetch('/submited', {
-            method: 'POST',
-            body: formData,
+        const response = await fetch("/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data),
         });
 
-        if (!response.ok) {
-            const result = await response.json();
-            if (result.field === 'login') {
-                loginInput.classList.add('is-invalid');
-                const invalidFeedback = loginInput.nextElementSibling;
-                invalidFeedback.textContent = result.message;
-            }
-            return;
+        const result = await response.json();
+        if (response.ok) {
+            localStorage.setItem("token", result.token);
+            window.location.href = result.redirect; // Redireciona corretamente
+        } else {
+            alert(result.message);
         }
-        window.location.href = '/users';
     } catch (err) {
-        console.error({error: 'erro na requisição:', message: err});
+        console.error("Erro:", err);
     }
 });
+
+
+
+if (!token) {
+    window.location.href = "/login"; // Redireciona se não estiver autenticado
+} else { fetch("/users", {
+    method: "GET",
+    headers: {
+        "Authorization": `Bearer ${token}`, // Enviar o token JWT
+        "Content-Type": "application/json",
+    },
+})
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error("Não autorizado");
+        }
+        return response.json();
+    })
+    .then((data) => console.log("Usuários:", data))
+    .catch((error) => {
+        console.error("Erro:", error);
+        window.location.href = "/login"; // Redireciona se o usuário não estiver autenticado
+    });
+}
