@@ -7,12 +7,13 @@ const bcrypt = require("bcrypt");
 const multer = require("multer");
 const cors = require("cors");
 const jwt = require('jsonwebtoken');
+require('dotenv').config()
 
 
-const JWT_SECRET = "sua_chave_secreta";
+
+const JWT_SECRET = process.env.JWT_SECRET;
 
 
-app.use(cors())
 app.use(express.static('public'));
 app.use("/users", express.static(path.join(__dirname, "users")));
 
@@ -22,6 +23,8 @@ app.use('/bootstrap', express.static(path.join(__dirname, 'node_modules/bootstra
 const User = require("./models/user");
 const { default: mongoose } = require("mongoose");
 
+const router = require("./routes");
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
@@ -29,11 +32,12 @@ app.set('view engine', 'ejs');
 app.set('views', './views');
 
 app.use(cors({
-    origin: ["http://example.com", "http://localhost:3000"], // Permitir apenas essa origem
+    origin: ["http://localhost:3000"], // Permitir apenas essa origem
     methods: ["GET", "POST", "PUT", "DELETE"], // Permitir apenas esses métodos HTTP
     allowedHeaders: ["Content-Type", "Authorization"], // Permitir apenas esses cabeçalhos
     credentials: true, // Habilitar envio de cookies e credenciais
 }));
+
 
 const storage = multer.diskStorage({
     destination: "users/", // Define a pasta onde os arquivos serão salvos
@@ -80,7 +84,7 @@ app.post('/submited', upload.single('image'), async (req, res) => {
         }
 
         console.log(req.file)
-        const passwordHash = await bcrypt.hash(password, 10);
+        const passwordHash = await bcrypt.hash(password, 12);
         const newUser = new User({ name, login, password: passwordHash, image: req.file.filename });
 
         await newUser.save();
@@ -103,36 +107,16 @@ app.get('/users', authenticateToken, async (req, res) => {
     }
 });
 
-app.post('/login', async (req, res) => {
-    console.log("chegou aqui1", req.body)
-    const { login, password } = req.body;
+app.use(router)
 
-    try {
-        const user = await User.findOne({ login });
-        if (!user) {
-            return res.status(404).render('login', { msg: "Usuário não encontrado!" });
-        }
-
-        const isPasswordValid = await bcrypt.compare(password, user.password);
-        console.log("chegou aqui", isPasswordValid)
-        if (!isPasswordValid) {
-            return res.status(400).render('login', { msg: "Senha incorreta!" });
-        }
-
-        const token = jwt.sign({ id: user._id, login: user.login }, JWT_SECRET, { expiresIn: '1h' })
-
-
-        res.json({ token, redirect: `/edit/${login}` });
-
-    } catch (err) {
-        console.error('Erro ao realizar login:', err.message);
-        res.status(500).render('login', { msg: "Erro interno no servidor!" });
-    }
-});
 
 
 function authenticateToken(req, res, next) {
-    const token = req.headers.authorization?.split(" ")[1]; // Obtém o token do header 'Authorization'
+    let token = req.headers.authorization?.split(" ")[1]; // Obtém o token do header 'Authorization'
+
+    if (!token) {
+        token = req.query.token;
+    }
 
     if (!token) {
         return res.status(401).json({ message: "Token não fornecido" });
@@ -150,17 +134,16 @@ function authenticateToken(req, res, next) {
 app.post('/delete', async (req, res) => {
     const { login } = req.body;
 
+    if (!login) {
+        return res.status(400).send("login do Usuario é obrigatorio para deletar")
+    }
+
     try {
         await User.deleteOne({ login });
     } catch (err) {
         ('Erro ao deletar os usuarios', err);
         res.status(500).send('erro ao deletar os usuarios');
     }
-
-    if (!login) {
-        return res.status(400).send("login do Usuario é obrigatorio para deletar")
-    }
-
     res.redirect("/users");
 })
 
