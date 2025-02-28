@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 const path = require("path");
 const port = 3000;
-const data = require('./data');
+const data = require('./data/data');
 const bcrypt = require("bcrypt");
 const multer = require("multer");
 const cors = require("cors");
@@ -18,7 +18,8 @@ app.use('/bootstrap', express.static(path.join(__dirname, 'node_modules/bootstra
 
 const { default: mongoose } = require("mongoose");
 
-const router = require("./routes");
+const router = require("./routes/login");
+const submited = require("./routes/submited");
 const { Console } = require("console");
 
 app.use(express.urlencoded({ extended: true }));
@@ -28,16 +29,16 @@ app.set('view engine', 'ejs');
 app.set('views', './views');
 
 app.use(cors({
-    origin: ["http://localhost:3000"], // Permitir apenas essa origem
-    methods: ["GET", "POST", "PUT", "DELETE"], // Permitir apenas esses métodos HTTP
-    allowedHeaders: ["Content-Type", "Authorization"], // Permitir apenas esses cabeçalhos
-    credentials: true, // Habilitar envio de cookies e credenciais
+    origin: ["http://localhost:3000"],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
 }));
 
 const storage = multer.diskStorage({
-    destination: "users/", // Define a pasta onde os arquivos serão salvos
+    destination: "imagePerfil/",
     filename: (req, file, cb) => {
-        const uniqueName = `${Date.now()}.jpg`; // Nome único com extensão .jpg
+        const uniqueName = `${Date.now()}.jpg`;
         cb(null, uniqueName);
     },
 });
@@ -56,51 +57,12 @@ app.get('/cadastrar', (req, res) => {
     res.render('register', data);
 });
 
-
 app.get('/submited', (req, res) => {
     res.render('submited', { User });
 });
 
-app.post('/submited', upload.single('image'), async (req, res) => {
-    const { name, login, password } = req.body;
-
-    try {
-        const alreadyEmail = await User.findOne({ login });
-        if (alreadyEmail) {
-            return res.status(400).json({
-                field: 'login',
-                message: 'Login já existe',
-            });
-        }
-
-        console.log(req.file);
-        const passwordHash = await bcrypt.hash(password, 12);
-        const newUser = new User({ name, 
-            login, 
-            password: passwordHash, 
-            image: req.file.filename });
-
-        await newUser.save();
-
-        const token = jwt.sign({ id: newUser.id, 
-            login: newUser.login }, 
-            JWT_SECRET, { expiresIn: '1h' });
-
-            res.json({ 
-                success: true, 
-                token: token,
-                redirect: '/users'
-            });
-            console.log(res.json);
-            console.log('Generated Token:', token); // Log the token for debugging
-    } catch (err) {
-        console.error('Erro ao salvar o usuário:', err);
-        res.status(500).send('Erro ao salvar o usuário');
-    }
-});
 
 app.get('/users', async (req, res) => {
-    
     try {
         const users = await User.find();
         res.render('users', { users });
@@ -109,68 +71,87 @@ app.get('/users', async (req, res) => {
         res.status(500).send('Erro ao buscar os usuários');
     }
 });
-
+app.use(submited);
 app.use(router);
 
 function authenticateToken(req, res, next) {
-
     if (req.isAdmin) {
         return next();
     }
+
     const authHeader = req.headers['authorization'];
-    let token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN format
+    let token = authHeader && authHeader.split(' ')[1];
 
     if (!token) {
         token = req.query.token;
     }
 
     if (!token) {
-        // For API requests
         if (req.xhr || req.headers.accept?.includes('json')) {
-            return res.status(401).json({ 
+            return res.status(401).json({
                 success: false,
-                message: 'Token não fornecido' 
+                message: 'Token não fornecido'
             });
         }
-        // For browser requests
-        // return res.redirect('/login');
     }
 
     jwt.verify(token, JWT_SECRET, (err, user) => {
         if (err) {
-            // Handle different JWT errors
             if (err.name === 'TokenExpiredError') {
-                return res.status(401).json({ 
+                return res.status(401).json({
                     success: false,
-                    message: 'Token expirado' 
+                    message: 'Token expirado'
                 });
             }
-            
-            return res.status(401).json({ 
+
+            return res.status(401).json({
                 success: false,
-                message: 'Token inválido' 
+                message: 'Token inválido'
             });
         }
 
-        // Store decoded user in request
         req.user = user;
         next();
     });
 }
 
-app.post('/delete', authenticateToken, async (req, res) => {
+app.post('/admin/delete', authenticateToken, async (req, res) => {
+    if (!req.isAdmin) {
+        return res.status(403).json({
+            success: false,
+            message: 'Acesso negado'
+        });
+    }
+
     const { login } = req.body;
 
     if (!login) {
-        return res.status(400).send("login do Usuario é obrigatorio para deletar");
+        return res.status(400).json({
+            success: false,
+            message: 'Login do usuário é obrigatório para deletar'
+        });
     }
 
     try {
+        const user = await User.findOne({ login });
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: 'Usuário não encontrado'
+            });
+        }
+
         await User.deleteOne({ login });
-        res.redirect("/users");
+        res.json({
+            success: true,
+            message: 'Usuário deletado com sucesso'
+        });
     } catch (err) {
-        console.error('Erro ao deletar os usuarios', err);
-        res.status(500).send('erro ao deletar os usuarios');
+        console.error('Erro ao deletar o usuário:', err);
+        res.status(500).json({
+            success: false,
+            message: 'Erro ao deletar o usuário'
+        });
     }
 });
 
@@ -244,7 +225,7 @@ app.post('/login', async (req, res) => {
     try {
         const user = await User.findOne({ login });
         if (!user) {
-            return res.status(401).json({ 
+            return res.status(401).json({
                 success: false,
                 message: 'Login ou senha inválidos'
             });
@@ -252,7 +233,7 @@ app.post('/login', async (req, res) => {
 
         const isValidPassword = await bcrypt.compare(password, user.password);
         if (!isValidPassword) {
-            return res.status(401).json({ 
+            return res.status(401).json({
                 success: false,
                 message: 'Login ou senha inválidos'
             });
@@ -264,7 +245,7 @@ app.post('/login', async (req, res) => {
             { expiresIn: '1h' }
         );
 
-        console.log('Generated Token1:', token); // Log the token for debugging
+        console.log('Generated Token1:', token);
 
         res.json({
             success: true,
@@ -273,14 +254,15 @@ app.post('/login', async (req, res) => {
         });
     } catch (err) {
         console.error('Erro ao fazer login:', err);
-        res.status(500).json({ 
+        res.status(500).json({
             success: false,
             message: 'Erro ao fazer login'
         });
     }
 });
 
-
 app.listen(port, () => {
     console.log(`server runing at localhost , ${port}`);
 });
+
+module.exports = upload;
