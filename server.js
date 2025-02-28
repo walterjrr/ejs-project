@@ -4,7 +4,6 @@ const path = require("path");
 const port = 3000;
 const data = require('./data/data');
 const bcrypt = require("bcrypt");
-const multer = require("multer");
 const cors = require("cors");
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
@@ -20,6 +19,8 @@ const { default: mongoose } = require("mongoose");
 
 const router = require("./routes/login");
 const submited = require("./routes/submited");
+const usersList = require("./routes/usersList");
+const authenticateToken = require("./middlewares/authenticateToken");
 const { Console } = require("console");
 
 app.use(express.urlencoded({ extended: true }));
@@ -35,85 +36,23 @@ app.use(cors({
     credentials: true,
 }));
 
-const storage = multer.diskStorage({
-    destination: "imagePerfil/",
-    filename: (req, file, cb) => {
-        const uniqueName = `${Date.now()}.jpg`;
-        cb(null, uniqueName);
-    },
-});
-
-const upload = multer({ storage });
-
 app.get('/', (req, res) => {
     res.render('index');
 });
 
-app.get('/login', async (req, res) => {
-    res.render('login', { msg: null });
-});
+
 
 app.get('/cadastrar', (req, res) => {
     res.render('register', data);
 });
 
-app.get('/submited', (req, res) => {
-    res.render('submited', { User });
-});
 
 
-app.get('/users', async (req, res) => {
-    try {
-        const users = await User.find();
-        res.render('users', { users });
-    } catch (err) {
-        console.log('Erro ao buscar os usuários', err);
-        res.status(500).send('Erro ao buscar os usuários');
-    }
-});
 app.use(submited);
 app.use(router);
+app.use(usersList);
+app.use(authenticateToken);
 
-function authenticateToken(req, res, next) {
-    if (req.isAdmin) {
-        return next();
-    }
-
-    const authHeader = req.headers['authorization'];
-    let token = authHeader && authHeader.split(' ')[1];
-
-    if (!token) {
-        token = req.query.token;
-    }
-
-    if (!token) {
-        if (req.xhr || req.headers.accept?.includes('json')) {
-            return res.status(401).json({
-                success: false,
-                message: 'Token não fornecido'
-            });
-        }
-    }
-
-    jwt.verify(token, JWT_SECRET, (err, user) => {
-        if (err) {
-            if (err.name === 'TokenExpiredError') {
-                return res.status(401).json({
-                    success: false,
-                    message: 'Token expirado'
-                });
-            }
-
-            return res.status(401).json({
-                success: false,
-                message: 'Token inválido'
-            });
-        }
-
-        req.user = user;
-        next();
-    });
-}
 
 app.post('/admin/delete', authenticateToken, async (req, res) => {
     if (!req.isAdmin) {
@@ -264,5 +203,3 @@ app.post('/login', async (req, res) => {
 app.listen(port, () => {
     console.log(`server runing at localhost , ${port}`);
 });
-
-module.exports = upload;

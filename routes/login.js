@@ -7,9 +7,12 @@ require('dotenv').config()
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
+router.get('/login', async (req, res) => {
+    res.render('login', { msg: null });
+});
+
 
 router.post('/login', async (req, res) => {
-    // Login logic here
     const { login, password } = req.body;
 
     try {

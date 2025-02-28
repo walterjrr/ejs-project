@@ -1,5 +1,4 @@
 const express = require("express");
-const data = require('../data/data');
 const bcrypt = require("bcrypt");
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
@@ -17,6 +16,10 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage });
+
+router.get('/submited', (req, res) => {
+    res.render('submited', { User });
+});
 
 router.post('/submited', upload.single('image'), async (req, res) => {
     const { name, login, password } = req.body;
