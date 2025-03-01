@@ -26,10 +26,16 @@ router.post('/login', async (req, res) => {
             return res.status(400).render('login', { msg: "Senha incorreta!" });
         }
 
-        const token = jwt.sign({ id: user._id, login: user.login }, JWT_SECRET, { expiresIn: '1h' })
+        const token = jwt.sign({ id: user._id, login: user.login, admin: false }, JWT_SECRET, { expiresIn: '1h' })
 
+        // Configurar o cookie
+        res.cookie('auth_token', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            maxAge: 3600000 // 1 hora em milissegundos
+        });
 
-        res.redirect(`/edit/${login}?token=${token}`)
+        res.redirect(`/edit/${login}`);
 
     } catch (err) {
         console.error('Erro ao realizar login:', err.message);

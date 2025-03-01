@@ -50,9 +50,14 @@ router.post('/submited', upload.single('image'), async (req, res) => {
         },
             JWT_SECRET, { expiresIn: '1h' });
 
+        res.cookie('auth_token', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            maxAge: 3600000
+        });
+
         res.json({
             success: true,
-            token: token,
             redirect: '/login'
         });
         console.log(res.json);
