@@ -6,6 +6,7 @@ const data = require('./data/data');
 const cors = require("cors");
 const cookieParser = require('cookie-parser');
 
+
 const authenticateToken = require("./middlewares/authenticateToken");
 const verifyAdminToken = require("./middlewares/verifyToken");
 const admin = require("./routes/admin")
@@ -18,14 +19,14 @@ const edit = require("./routes/edit")
 
 require('dotenv').config();
 
+app.use(cookieParser());
 app.use(express.static('public'));
-app.use("/users", express.static(path.join(__dirname, "users")));
 app.use('/bootstrap', express.static(path.join(__dirname, 'node_modules/bootstrap/dist')));
 
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(cookieParser());
+
 
 app.set('view engine', 'ejs');
 app.set('views', './views');
@@ -45,13 +46,14 @@ app.get('/cadastrar', (req, res) => {
     res.render('register', data);
 });
 
+app.use("/users", express.static(path.join(__dirname, "users")));
 app.use(edit);
 app.use(submited);
 app.use(admin)
 app.use(router);
 app.use(usersList);
-app.use(verifyAdminToken)
 app.use(authenticateToken);
+app.use(verifyAdminToken)
 
 app.listen(port, () => {
     console.log(`server runing at localhost , ${port}`);

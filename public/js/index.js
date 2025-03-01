@@ -37,7 +37,8 @@ document.getElementById("registrationForm").addEventListener("submit", async (e)
     try {
         const response = await fetch("/submited", {
             method: "POST",
-            body: formData
+            body: formData,
+            credentials: 'include'
         });
 
         const result = await response.json();
@@ -66,10 +67,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!token) {
         window.location.href = "/login";
-        
-    if (token) {
-    window.location.href = `/edit/${login}?token=${token}`;
-}
     } else {
         // Verify token on protected routes
         fetch("/users", {
@@ -85,5 +82,4 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// Example of how to include the token in the URL for protected routes
 
