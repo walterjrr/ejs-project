@@ -4,15 +4,19 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require("../models/user");
 require('dotenv').config()
+const limiter = require('express-rate-limit');
+const app = express();
 
 const JWT_SECRET = process.env.JWT_SECRET;
+
+app.use(limiter);
 
 router.get('/login', async (req, res) => {
     res.render('login', { msg: null });
 });
 
 
-router.post('/login', async (req, res) => {
+router.post('/login', limiter, async (req, res) => {
     const { login, password } = req.body;
 
     try {

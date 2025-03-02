@@ -1,10 +1,13 @@
 const express = require('express');
+const app = express();
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 const User = require("../models/user");
 require('dotenv').config()
 const verifyAdminToken = require("../middlewares/verifyToken");
 const JWT_SECRET = process.env.JWT_SECRET;
+const ratelimiter = require('../middlewares/rateLimit');
+
 
 router.get('/admin/login', (req, res) => {
     res.render('adminLogin', { msg: null });
@@ -40,7 +43,7 @@ router.post('/admin/delete', verifyAdminToken, async (req, res) => {
     }
 });
 
-router.post('/admin/login', async (req, res) => {
+router.post('/admin/login',ratelimiter, async (req, res) => {
     const { adminLogin, adminPassword } = req.body;
     
     if (adminLogin === process.env.ADMIN_LOGIN && adminPassword === process.env.ADMIN_PASSWORD) {
