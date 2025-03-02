@@ -58,4 +58,9 @@ router.post('/admin/login', async (req, res) => {
     }
 });
 
+router.get('/admin/logout', verifyAdminToken, (req, res) => {
+    res.clearCookie('admin_token');
+    res.redirect('/admin/login');
+});
+
 module.exports = router
