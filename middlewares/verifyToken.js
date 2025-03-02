@@ -26,7 +26,6 @@ const verifyAdminToken = async (req, res, next) => {
         }
         
         req.admin = decoded;
-        console.log('req.adim', decoded)
         next();
     } catch (err) {
         res.clearCookie('admin_token'); // Remove o cookie inválido

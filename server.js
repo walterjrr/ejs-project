@@ -10,7 +10,6 @@ const cookieParser = require('cookie-parser');
 const authenticateToken = require("./middlewares/authenticateToken");
 const verifyAdminToken = require("./middlewares/verifyToken");
 const admin = require("./routes/admin")
-const { default: mongoose } = require("mongoose");
 
 const router = require("./routes/login");
 const submited = require("./routes/submited");

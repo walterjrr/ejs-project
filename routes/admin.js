@@ -10,6 +10,10 @@ router.get('/admin/login', (req, res) => {
     res.render('adminLogin', { msg: null });
 });
 
+router.get('/admin/index', verifyAdminToken, async (req, res) => {
+    res.render('adminPage')
+});
+
 router.post('/admin/delete', verifyAdminToken, async (req, res) => {
     const { login } = req.body;
     
@@ -48,7 +52,7 @@ router.post('/admin/login', async (req, res) => {
             maxAge: 3600000 
         });
 
-        return res.redirect('/users');
+        return res.redirect('/admin/index');
     } else {
         return res.redirect('/admin/login');
     }

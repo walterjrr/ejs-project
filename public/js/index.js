@@ -67,6 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!token) {
         window.location.href = "/login";
+        
     } else {
         // Verify token on protected routes
         fetch("/users", {
@@ -80,6 +81,5 @@ document.addEventListener('DOMContentLoaded', () => {
             window.location.href = "/login";
         });
     }
-});
-
+})
 
